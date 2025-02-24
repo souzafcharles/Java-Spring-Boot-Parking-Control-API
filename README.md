@@ -29,31 +29,46 @@ The Parking Control API's architecture is designed for maintainability and scala
 
 ## Project Stack:
 
-| Technology        | Version   | Description                                               |
-|-------------------|-----------|-----------------------------------------------------------|
-| 📐 IntelliJ IDEA  | `2024.3`  | Integrated Development Environment (IDE)                  |
-| ☕ Java           | `21`      | Backend programming language                              |
-| 🌱 Spring Boot    | `3.4.3`   | Framework for creating Spring applications                |
-| 🐦 Maven          | `3.9.9`   | Build automation and dependency management tool           |
-| 🐘 PostgreSQL     | `17`      | Relational database management system                     |
-| 👩‍🚀 Postman        | `11.19`   | API testing and development tool                          |
+| Technology       | Version  | Description                                     |
+|------------------|----------|-------------------------------------------------|
+| 📐 IntelliJ IDEA | `2024.3` | Integrated Development Environment (IDE)        |
+| ☕ Java           | `21`     | Backend programming language                    |
+| 🌱 Spring Boot   | `3.4.3`  | Framework for creating Spring applications      |
+| 🐦 Maven         | `3.9.9`  | Build automation and dependency management tool |
+| 🐘 PostgreSQL    | `17`     | Relational database management system           |
+| 👩‍🚀 Postman    | `11.19`  | API testing and development tool                |
 
 ***
 
 ## Dependencies:
 
-| Dependency              | Category         | Description                                                                                                    |
-|-------------------------|------------------|----------------------------------------------------------------------------------------------------------------|
-| 🌐 Spring Web           | Web              | Build web applications, including RESTful APIs, using Spring MVC. Uses Apache Tomcat as the default container  |
-| 💾 Spring Data JPA      | SQL              | Facilitates database access using JPA with Spring Data and Hibernate                                           |
-| 🐘 PostgreSQL Driver    | SQL              | JDBC and R2DBC driver enabling Java applications to interact with PostgreSQL databases                         |
-| ✔️ Validation           | Validation (I/O) | Enables Java Bean Validation using Hibernate Validator                                                         |
-| 🗝️ dotenv-java          | Configuration    | Loads environment variables from a `.env` file into the application, aiding in secure configuration management |
-
+| Dependency           | Category         | Description                                                                                                    |
+|----------------------|------------------|----------------------------------------------------------------------------------------------------------------|
+| 🌐 Spring Web        | Web              | Build web applications, including RESTful APIs, using Spring MVC. Uses Apache Tomcat as the default container  |
+| 💾 Spring Data JPA   | SQL              | Facilitates database access using JPA with Spring Data and Hibernate                                           |
+| 🐘 PostgreSQL Driver | SQL              | JDBC and R2DBC driver enabling Java applications to interact with PostgreSQL databases                         |
+| ✔️ Validation        | Validation (I/O) | Enables Java Bean Validation using Hibernate Validator                                                         |
+| 🗝️ dotenv-java      | Configuration    | Loads environment variables from a `.env` file into the application, aiding in secure configuration management |
 
 ***
 
-### SQL script to store data in the `parkingcontrolapi` database:
+## Parking Spot Model Entity:
+
+![Parking Spot Model Entity](https://github.com/souzafcharles/Java-Spring-Boot-Parking-Control-API/blob/main/src/main/resources/static/img/parking-spot-model-entity.png)
+
+***
+
+## Project API Rest Architecture:
+
+![Project API Rest Architecture](https://github.com/souzafcharles/Java-Spring-Boot-Parking-Control-API/blob/main/src/main/resources/static/img/api-rest-architecture.png)
+***
+
+## Project Logic Layered Architecture:
+
+![Layered Architecture](https://github.com/souzafcharles/Java-Spring-Boot-Parking-Control-API/blob/main/src/main/resources/static/img/logic-layered-architecture.png)
+***
+
+## SQL script to store data in the `parkingcontrolapi` database:
 
 ````sql
 -- Drop the table if it exists
@@ -90,16 +105,15 @@ values
 
 ***
 
-#### Setting up `application.properties` File with PostgreSQL Configurations:
+## Setting up `application.properties` File with PostgreSQL Configurations:
+
 ```properties
 # Application name
 spring.application.name=parkingcontrolapi
-
 # PostgreSQL Connection
 spring.datasource.url=${DATABASE_URL}
 spring.datasource.username=${DATABASE_USERNAME}
 spring.datasource.password=${DATABASE_PASSWORD}
-
 # Hibernate settings
 spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=update
