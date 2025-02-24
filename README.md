@@ -1,9 +1,15 @@
 ![GitHub language count](https://img.shields.io/github/languages/count/souzafcharles/Java-Spring-Boot-Parking-Control-API)
 ![GitHub top language](https://img.shields.io/github/languages/top/souzafcharles/Java-Spring-Boot-Parking-Control-API)
-![GitHub](https://img.shields.io/github/license/souzafcharles/Java-Spring-Boot-Parking-Control-AP)
+![GitHub](https://img.shields.io/github/license/souzafcharles/Java-Spring-Boot-Parking-Control-API)
 ![GitHub last commit](https://img.shields.io/github/last-commit/souzafcharles/Java-Spring-Boot-Parking-Control-API)
 
 # Java Spring Boot | Parking Control API
+
+***
+
+▶️ Project developed based on a tutorial by **Michelli Brito** - [Decoder](https://www.michellibrito.com/).
+
+***
 
 ## Introduction:
 
@@ -45,3 +51,57 @@ The Parking Control API's architecture is designed for maintainability and scala
 | 🗝️ dotenv-java          | Configuration    | Loads environment variables from a `.env` file into the application, aiding in secure configuration management |
 
 
+***
+
+### SQL script to store data in the `parkingcontrolapi` database:
+
+````sql
+-- Drop the table if it exists
+drop table if exists tb_parking_spot;
+
+-- Create the table
+create table tb_parking_spot (
+id uuid default gen_random_uuid() primary key,
+parking_spot_number varchar(10) not null unique,
+license_plate_car varchar(8) not null unique check (license_plate_car ~ '^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$'),
+brand_car varchar(70) not null,
+model_car varchar(70) not null,
+color_car varchar(70) not null,
+registration_date timestamp not null default now(),
+responsible_name varchar(130) not null,
+apartment varchar(30) not null,
+block varchar(30) not null
+);
+
+-- Insert sample data
+insert into tb_parking_spot (parking_spot_number, license_plate_car, brand_car, model_car, color_car, responsible_name, apartment, block)
+values
+('A01', 'ABC1234', 'Toyota', 'Corolla', 'Black', 'Balthazar de Bigode', '101', 'A'),
+('B12', 'DEF5678', 'Honda', 'Civic', 'White', 'Ophelia Birrenta', '202', 'B'),
+('C23', 'GHI9J45', 'Ford', 'Fiesta', 'Blue', 'Ludovico Crispim', '303', 'C'),
+('D34', 'JKL6789', 'Chevrolet', 'Onix', 'Red', 'Abigail Sebastiana', '404', 'D'),
+('E45', 'MNO1234', 'Volkswagen', 'Golf', 'Gray', 'Belizario Epaminondas', '505', 'E'),
+('F56', 'PQR5678', 'Nissan', 'Sentra', 'Silver', 'Belarmino Gumercindo', '606', 'F'),
+('G67', 'STU9V45', 'Hyundai', 'Tucson', 'Green', 'Zuleica Serafina', '707', 'G'),
+('H78', 'VWX6789', 'Kia', 'Sportage', 'Yellow', 'Vitalino Simplicio', '808', 'H'),
+('I89', 'YZA2345', 'Fiat', 'Uno', 'Brown', 'Cassandra Valquiria', '909', 'I'),
+('J90', 'BCD3456', 'Renault', 'Duster', 'Purple', 'Abilio Prudencio', '1001', 'J');
+````
+
+***
+
+#### Setting up `application.properties` File with PostgreSQL Configurations:
+```properties
+# Application name
+spring.application.name=parkingcontrolapi
+
+# PostgreSQL Connection
+spring.datasource.url=${DATABASE_URL}
+spring.datasource.username=${DATABASE_USERNAME}
+spring.datasource.password=${DATABASE_PASSWORD}
+
+# Hibernate settings
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+```
