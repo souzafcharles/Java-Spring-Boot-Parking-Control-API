@@ -1,4 +1,4 @@
-package com.souza.charles.parkingcontrolapi.model;
+package com.souza.charles.parkingcontrolapi.models;
   /*
   Tutorial: Spring Boot | Complete Course | Parking Control API
   Instructor: Michelli Brito - Decoder
