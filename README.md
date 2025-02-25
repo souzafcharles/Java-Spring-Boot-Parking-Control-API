@@ -431,3 +431,69 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 - **Purpose:**
     - Ensure consistent date-time serialization and deserialization across the application using the defined date-time
       format.
+
+***
+
+## Setting Up the RESTful API for HTTP Methods:
+
+## GET
+### findAll
+```
+http://localhost:8080/parking-spot?page=0&size=10&sort=id,asc
+```
+
+#### Query Params
+- **page**: 0
+- **size**: 10
+- **sort**: id,asc
+
+### findById
+```
+http://localhost:8080/parking-spot/0d8525e2-f208-4468-b2f5-93c91ecd608d
+```
+
+## POST
+### insert
+```
+http://localhost:8080/parking-spot
+```
+
+#### Body
+```json
+{
+  "parkingSpotNumber": "C55",
+  "licensePlateCar": "ZOO1234",
+  "brandCar": "Toyota",
+  "modelCar": "Etios",
+  "colorCar": "Vermelho",
+  "responsibleName": "Theodorico Raimundo",
+  "apartment": "555",
+  "block": "C"
+}
+```
+
+## PUT
+### update
+```
+http://localhost:8080/parking-spot/0d8525e2-f208-4468-b2f5-93c91ecd608d
+```
+
+#### Body
+```json
+{
+  "parkingSpotNumber": "I89",
+  "licensePlateCar": "IIA0058",
+  "brandCar": "Fiat",
+  "modelCar": "Argo",
+  "colorCar": "Silver",
+  "responsibleName": "Cassandra Valquiria",
+  "apartment": "909",
+  "block": "I"
+}
+```
+
+## DELETE
+### delete
+```
+http://localhost:8080/parking-spot/0d8525e2-f208-4468-b2f5-93c91ecd608d
+```
