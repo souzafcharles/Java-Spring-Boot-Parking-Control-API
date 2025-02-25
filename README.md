@@ -120,3 +120,278 @@ spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ```
+
+***
+
+## Requirements for LoadEnvironment Class:
+
+- **Class Purpose:**
+    - Create the `LoadEnvironment` class to load environment variables from a `.env` file and set them as system
+      properties.
+
+- **Load Environment Method:**
+    - **Method:** `loadEnv`
+    - **Purpose:** Loads environment variables from a `.env` file and sets them as system properties.
+    - **Implementation Details:**
+        - Use the `Dotenv.configure().load()` method from the `io.github.cdimascio.dotenv` library to load the
+          environment variables.
+        - Iterate over the entries using
+          `dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()))` to set each
+          environment variable as a system property.
+
+- **External Library:**
+    - **Library:** `io.github.cdimascio.dotenv`
+    - **Purpose:** Used to load environment variables from a `.env` file. Ensure this library is included as a
+      dependency in your project's build configuration.
+
+- **Purpose:**
+    - Ensure that environment variables defined in a `.env` file are loaded and accessible as system properties
+      throughout the application.
+
+***
+
+## Requirements for `ParkingSpotModel` Entity Class:
+
+- **Entity Mapping:**
+    - Create the `ParkingSpotModel` class as an entity to represent a database table in the application;
+    - Annotate the class with `@Entity` to define it as a persistent entity;
+    - Use `@Table(name = "tb_parking_spot")` to map it to the database table named `tb_parking_spot`.
+
+- **Attributes and Annotations:**
+    - Define attributes `id`, `parkingSpotNumber`, `licensePlateCar`, `brandCar`, `modelCar`, `colorCar`,
+      `registrationDate`, `responsibleName`, `apartment`, and `block` to map to the respective columns in the database;
+    - Annotate the `id` field with `@Id` and `@GeneratedValue(strategy = GenerationType.AUTO)` for automatic primary key
+      generation;
+    - Annotate each attribute with `@Column` to specify column properties such as `nullable`, `unique`, and `length`.
+
+- **Constructors:**
+    - Create a no-argument constructor required by `JPA`;
+    - Provide a constructor that initializes all attributes except `id` and `registrationDate`.
+
+- **Accessors and Mutators:**
+    - Implement `getters` and `setters` for all attributes to allow data manipulation.
+
+- **Equals and HashCode:**
+    - Override the `equals()` method to compare entities based on the `id` attribute;
+    - Override `hashCode()` to provide a consistent hash for `ParkingSpotModel` objects, using `Objects.hashCode(id)`.
+
+- **Serializable Interface:**
+    - Implement the `Serializable` interface to support object serialization for the entity when necessary (e.g., when
+      transferring objects between systems).
+
+***
+
+## Requirements DTO Pattern for ParkingSpotDTO Record Class:
+
+- **Record Declaration:**
+    - Create the `ParkingSpotDTO` as a `record` class to represent the data transfer object for parking spots.
+
+- **Attribute Definition:**
+    - Define the attributes `String parkingSpotNumber`, `String licensePlateCar`, `String brandCar`, `String modelCar`,
+      `String colorCar`, `String responsibleName`, `String apartment`, and `String block` directly in the record's
+      header, ensuring immutability and automatic generation of accessor methods.
+
+- **Validation Constraints:**
+    - Annotate each attribute with appropriate validation constraints, such as `@NotBlank` and `@Size`, to enforce data
+      integrity and validation rules.
+
+- **Purpose:**
+    - Use this `record` for receiving and validating user input from client requests to create or update
+      `ParkingSpotModel` entities within the application.
+
+***
+
+## Requirements for ParkingSpotRepository Interface:
+
+- **Repository Creation:**
+    - Create the `ParkingSpotRepository` interface to handle data access operations for the `ParkingSpotModel` entity.
+
+- **JpaRepository Extension:**
+    - Extend `JpaRepository<ParkingSpotModel, UUID>` to inherit common CRUD operations and JPA-specific functionalities.
+
+- **Entity Association:**
+    - Specify `ParkingSpotModel` as the associated entity and `UUID` as the type for its primary key.
+
+- **Custom Query Methods:**
+    - Define custom query methods to check for the existence of parking spots based on certain attributes:
+        - `boolean existsByLicensePlateCar(String licensePlateCar);`
+        - `boolean existsByParkingSpotNumber(String parkingSpotNumber);`
+        - `boolean existsByApartmentAndBlock(String apartment, String block);`
+
+- **Purpose:**
+    - Use these custom query methods to validate and enforce unique constraints on parking spot attributes within the
+      application.
+
+***
+
+## Requirements for ParkingSpotService Class:
+
+- **Service Component Annotation:**
+    - Use the `@Service` annotation to define the class as a Spring service component.
+
+- **Dependency Injection:**
+    - Inject `ParkingSpotRepository` using constructor-based injection for dependency injection.
+
+- **Save Parking Spot Entity:**
+    - **Method:** `save`
+    - **Purpose:** Saves a new `ParkingSpotModel` entity in the database.
+    - **Transaction Management:** Annotate with `@Transactional` to ensure this method runs within a transactional
+      context, enabling database operation rollbacks in case of exceptions.
+
+- **Check for Existing Parking Spot by License Plate:**
+    - **Method:** `existsByLicensePlateCar`
+    - **Purpose:** Checks if a parking spot already exists based on the license plate number.
+
+- **Check for Existing Parking Spot by Spot Number:**
+    - **Method:** `existsByParkingSpotNumber`
+    - **Purpose:** Checks if a parking spot already exists based on the parking spot number.
+
+- **Check for Existing Parking Spot by Apartment and Block:**
+    - **Method:** `existsByApartmentAndBlock`
+    - **Purpose:** Checks if a parking spot already exists based on the apartment and block.
+
+- **Retrieve All Parking Spot Entities:**
+    - **Method:** `findAll`
+    - **Purpose:** Fetches all entries from the database with pagination support.
+    - **Transaction Management:** This method does not require explicit transaction management.
+
+- **Retrieve Parking Spot Entity by ID:**
+    - **Method:** `findById`
+    - **Purpose:** Fetches a single `ParkingSpotModel` entity by its identifier.
+    - **Transaction Management:** This method does not require explicit transaction management.
+
+- **Delete Parking Spot Entity:**
+    - **Method:** `delete`
+    - **Purpose:** Deletes a `ParkingSpotModel` entity from the database.
+    - **Transaction Management:** Annotate with `@Transactional` to ensure the operation is part of a transaction,
+      allowing rollback in case of failure.
+
+***
+
+## Requirements for ParkingSpotController Class:
+
+- **Controller Component Annotation:**
+    - Use the `@RestController` annotation to mark the class as a REST controller for Spring.
+
+- **Request Mapping:**
+    - Use the `@RequestMapping` annotation to map requests to the `/parking-spot` endpoint.
+
+- **Dependency Injection:**
+    - Inject `ParkingSpotService` using constructor-based dependency injection.
+
+- **Save Parking Spot Endpoint:**
+    - **Method:** `saveParkingSpot`
+    - **Purpose:** Handles the creation of a new `ParkingSpot` resource.
+    - **Mapping Annotation:** Use `@PostMapping` to map POST requests to `/parking-spot`.
+    - **Parameters:**
+        - `@RequestBody @Valid ParkingSpotDTO parkingSpotDTO`: Captures the details for the new parking spot from the
+          request body.
+    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 201 (Created) status and the created `ParkingSpot`
+      object if successful, or an HTTP 409 (Conflict) status if there are validation errors.
+
+- **Retrieve All Parking Spots Endpoint:**
+    - **Method:** `getAllParkingSpots`
+    - **Purpose:** Retrieves all available parking spot resources.
+    - **Mapping Annotation:** Use `@GetMapping` to map GET requests to `/parking-spot`.
+    - **Parameters:**
+        - `@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable`:
+          Supports pagination and sorting.
+    - **Response:** Returns a `ResponseEntity<Page<ParkingSpotModel>>` with an HTTP 200 (OK) status and the list of
+      parking spots.
+
+- **Retrieve Parking Spot by ID Endpoint:**
+    - **Method:** `getOneParkingSpot`
+    - **Purpose:** Fetches a specific `ParkingSpot` by its identifier.
+    - **Mapping Annotation:** Use `@GetMapping(value = "/{id}")` to map GET requests for a specific parking spot.
+    - **Parameters:**
+        - `@PathVariable(value = "id") UUID id`: Captures the identifier of the parking spot from the URI.
+    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 200 (OK) status and the corresponding parking spot
+      object, or an HTTP 404 (Not Found) status if the spot is not found.
+
+- **Delete Parking Spot by ID Endpoint:**
+    - **Method:** `deleteParkingSpot`
+    - **Purpose:** Deletes a specific `ParkingSpot` resource by its identifier.
+    - **Mapping Annotation:** Use `@DeleteMapping(value = "/{id}")` to map DELETE requests for a specific parking spot.
+    - **Parameters:**
+        - `@PathVariable(value = "id") UUID id`: Captures the identifier of the parking spot to be deleted from the URI.
+    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 200 (OK) status and a success message, or an HTTP
+      404 (Not Found) status if the spot is not found.
+
+- **Update Parking Spot by ID Endpoint:**
+    - **Method:** `updateParkingSpot`
+    - **Purpose:** Updates an existing `ParkingSpot` resource by its identifier.
+    - **Mapping Annotation:** Use `@PutMapping(value = "/{id}")` to map PUT requests for updating a specific parking
+      spot.
+    - **Parameters:**
+        - `@PathVariable(value = "id") UUID id`: Captures the identifier of the parking spot from the URI.
+        - `@RequestBody @Valid ParkingSpotDTO parkingSpotDTO`: Captures the updated parking spot details from the
+          request body.
+    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 200 (OK) status and the updated parking spot object,
+      or an HTTP 404 (Not Found) status if the spot is not found.
+
+***
+
+## Requirements for GlobalExceptionHandler Class:
+
+- **Controller Advice Annotation:**
+    - Use the `@RestControllerAdvice` annotation to mark the class as a global exception handler for REST controllers.
+
+- **Handle IllegalArgumentException:**
+    - **Method:** `handleIllegalArgumentException`
+    - **Purpose:** Handles `IllegalArgumentException` exceptions globally.
+    - **Exception Handler Annotation:** Use `@ExceptionHandler(IllegalArgumentException.class)` to indicate that this
+      method handles `IllegalArgumentException`.
+    - **Response Construction:**
+        - Create a `Map<String, Object>` to store error details including `timestamp`, `status`, `error`, and `message`.
+        - Populate the map with appropriate values:
+            - `timestamp`: Current date and time (`LocalDateTime.now()`).
+            - `status`: HTTP status code for conflict (`HttpStatus.CONFLICT.value()`).
+            - `error`: Error type as "Conflict".
+            - `message`: Exception message (`ex.getMessage()`).
+    - **Response Entity:** Return a `ResponseEntity<Object>` with HTTP status 409 (Conflict) and the constructed error
+      response map.
+
+- **Handle General Exception:**
+    - **Method:** `handleGeneralException`
+    - **Purpose:** Handles all uncaught `Exception` exceptions globally.
+    - **Exception Handler Annotation:** Use `@ExceptionHandler(Exception.class)` to indicate that this method handles
+      general exceptions.
+    - **Response Construction:**
+        - Create a `Map<String, Object>` to store error details including `timestamp`, `status`, `error`, and `message`.
+        - Populate the map with appropriate values:
+            - `timestamp`: Current date and time (`LocalDateTime.now()`).
+            - `status`: HTTP status code for internal server error (`HttpStatus.INTERNAL_SERVER_ERROR.value()`).
+            - `error`: Error type as "Internal Server Error".
+            - `message`: Exception message (`ex.getMessage()`).
+    - **Response Entity:** Return a `ResponseEntity<Object>` with HTTP status 500 (Internal Server Error) and the
+      constructed error response map.
+
+***
+
+## Requirements for DateConfig Class:
+
+- **Configuration Annotation:**
+    - Use the `@Configuration` annotation to mark the class as a configuration class for Spring.
+
+- **DateTime Format Definition:**
+    - Define a public static final string `DATETIME_FORMAT` with the desired date-time format (
+      `"yyyy-MM-dd'T'HH:mm:ss'Z'"`).
+
+- **LocalDateTime Serializer Definition:**
+    - Define a public static `LocalDateTimeSerializer` named `LOCAL_DATETIME_SERIALIZER` using the
+      `DateTimeFormatter.ofPattern(DATETIME_FORMAT)` to apply the date-time format.
+
+- **ObjectMapper Bean Creation:**
+    - **Method:** `objectMapper`
+    - **Purpose:** Configures and returns an `ObjectMapper` bean with the custom date-time serializer.
+    - **Bean Annotation:** Use the `@Bean` annotation to indicate that this method produces a bean managed by the Spring
+      container.
+    - **Primary Annotation:** Use the `@Primary` annotation to mark this `ObjectMapper` bean as the primary bean when
+      multiple candidates are present.
+    - **Configuration Details:**
+        - Create a `JavaTimeModule` instance and add the custom `LOCAL_DATETIME_SERIALIZER` to it.
+        - Register the `JavaTimeModule` with the `ObjectMapper` instance and return it.
+
+- **Purpose:**
+    - Ensure consistent date-time serialization and deserialization across the application using the defined date-time
+      format.
