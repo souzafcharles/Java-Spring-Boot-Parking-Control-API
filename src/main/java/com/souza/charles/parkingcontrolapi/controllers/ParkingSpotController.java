@@ -1,5 +1,5 @@
 package com.souza.charles.parkingcontrolapi.controllers;
-  /*
+/*
   Tutorial: Spring Boot | Complete Course | Parking Control API
   Instructor: Michelli Brito - Decoder
   Project adapted by: Charles Fernandes de Souza
@@ -11,7 +11,6 @@ import com.souza.charles.parkingcontrolapi.models.ParkingSpotModel;
 import com.souza.charles.parkingcontrolapi.services.ParkingSpotService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -30,18 +30,21 @@ import java.util.UUID;
 @RequestMapping("/parking-spot")
 public class ParkingSpotController {
 
-    @Autowired
-    private ParkingSpotService parkingSpotService;
+    final ParkingSpotService parkingSpotService;
+
+    public ParkingSpotController(ParkingSpotService parkingSpotService) {
+        this.parkingSpotService = parkingSpotService;
+    }
 
     @PostMapping
-    public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDTO parkingSpotDTO) {
-        if (parkingSpotService.existsByLicensePlateCar(parkingSpotDTO.licensePlateCar())) {
+    public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDTO parkingSpotDTO){
+        if(parkingSpotService.existsByLicensePlateCar(parkingSpotDTO.licensePlateCar())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: License Plate Car is already in use!");
         }
-        if (parkingSpotService.existsByParkingSpotNumber(parkingSpotDTO.parkingSpotNumber())) {
+        if(parkingSpotService.existsByParkingSpotNumber(parkingSpotDTO.parkingSpotNumber())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Parking Spot is already in use!");
         }
-        if (parkingSpotService.existsByApartmentAndBlock(parkingSpotDTO.apartment(), parkingSpotDTO.block())) {
+        if(parkingSpotService.existsByApartmentAndBlock(parkingSpotDTO.apartment(), parkingSpotDTO.block())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Parking Spot already registered for this apartment/block!");
         }
         var parkingSpotModel = new ParkingSpotModel();
@@ -51,12 +54,12 @@ public class ParkingSpotController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpots(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<ParkingSpotModel>> getAllParkingSpots(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(parkingSpotService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value = "id") UUID id){
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if (!parkingSpotModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
@@ -65,7 +68,7 @@ public class ParkingSpotController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteParkingSpot(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteParkingSpot(@PathVariable(value = "id") UUID id){
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if (!parkingSpotModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
@@ -76,7 +79,7 @@ public class ParkingSpotController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateParkingSpot(@PathVariable(value = "id") UUID id,
-                                                    @RequestBody @Valid ParkingSpotDTO parkingSpotDTO) {
+                                                    @RequestBody @Valid ParkingSpotDTO parkingSpotDTO){
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if (!parkingSpotModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");

@@ -6,10 +6,10 @@ package com.souza.charles.parkingcontrolapi.services;
   Date: February 24, 2025
  */
 
+
 import com.souza.charles.parkingcontrolapi.models.ParkingSpotModel;
 import com.souza.charles.parkingcontrolapi.repositories.ParkingSpotRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,11 @@ import java.util.UUID;
 @Service
 public class ParkingSpotService {
 
-    @Autowired
-    private ParkingSpotRepository parkingSpotRepository;
+    final ParkingSpotRepository parkingSpotRepository;
+
+    public ParkingSpotService(ParkingSpotRepository parkingSpotRepository) {
+        this.parkingSpotRepository = parkingSpotRepository;
+    }
 
     @Transactional
     public ParkingSpotModel save(ParkingSpotModel parkingSpotModel) {

@@ -38,6 +38,22 @@ public class ParkingSpotModel implements Serializable {
     @Column(nullable = false, length = 30)
     private String block;
 
+    public ParkingSpotModel() {
+    }
+
+    public ParkingSpotModel(String parkingSpotNumber, String licensePlateCar, String brandCar,
+                            String modelCar, String colorCar, String responsibleName,
+                            String apartment, String block) {
+        this.parkingSpotNumber = parkingSpotNumber;
+        this.licensePlateCar = licensePlateCar;
+        this.brandCar = brandCar;
+        this.modelCar = modelCar;
+        this.colorCar = colorCar;
+        this.responsibleName = responsibleName;
+        this.apartment = apartment;
+        this.block = block;
+    }
+
     public UUID getId() {
         return id;
     }
