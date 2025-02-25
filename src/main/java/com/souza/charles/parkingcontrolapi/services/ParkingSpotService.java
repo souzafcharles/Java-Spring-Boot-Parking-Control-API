@@ -6,7 +6,6 @@ package com.souza.charles.parkingcontrolapi.services;
   Date: February 24, 2025
  */
 
-
 import com.souza.charles.parkingcontrolapi.models.ParkingSpotModel;
 import com.souza.charles.parkingcontrolapi.repositories.ParkingSpotRepository;
 import jakarta.transaction.Transactional;

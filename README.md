@@ -279,6 +279,10 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 - **Dependency Injection:**
     - Inject `ParkingSpotService` using constructor-based dependency injection.
 
+- **Centralized Message Management:**
+    - Utilize a separate utility class `ParkingSpotMessages` para armazenar mensagens constantes, garantindo melhor
+      organização e reutilização.
+
 - **Save Parking Spot Endpoint:**
     - **Method:** `saveParkingSpot`
     - **Purpose:** Handles the creation of a new `ParkingSpot` resource.
@@ -286,8 +290,12 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
     - **Parameters:**
         - `@RequestBody @Valid ParkingSpotDTO parkingSpotDTO`: Captures the details for the new parking spot from the
           request body.
-    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 201 (Created) status and the created `ParkingSpot`
-      object if successful, or an HTTP 409 (Conflict) status if there are validation errors.
+    - **Validations:**
+        - Checks for conflicts using the `ParkingSpotService`.
+        - Uses predefined messages from `ParkingSpotMessages` for conflict responses.
+    - **Response:** Returns a `ResponseEntity<Object>` with:
+        - HTTP 201 (Created) and the created `ParkingSpot` object if successful.
+        - HTTP 409 (Conflict) if the parking spot number, license plate, or apartment/block is already in use.
 
 - **Retrieve All Parking Spots Endpoint:**
     - **Method:** `getAllParkingSpots`
@@ -304,18 +312,20 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
     - **Purpose:** Fetches a specific `ParkingSpot` by its identifier.
     - **Mapping Annotation:** Use `@GetMapping(value = "/{id}")` to map GET requests for a specific parking spot.
     - **Parameters:**
-        - `@PathVariable(value = "id") UUID id`: Captures the identifier of the parking spot from the URI.
-    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 200 (OK) status and the corresponding parking spot
-      object, or an HTTP 404 (Not Found) status if the spot is not found.
+        - `@PathVariable UUID id`: Captures the identifier of the parking spot from the URI.
+    - **Response:** Returns a `ResponseEntity<Object>` with:
+        - HTTP 200 (OK) and the corresponding parking spot object if found.
+        - HTTP 404 (Not Found) with a message from `ParkingSpotMessages` if the spot is not found.
 
 - **Delete Parking Spot by ID Endpoint:**
     - **Method:** `deleteParkingSpot`
     - **Purpose:** Deletes a specific `ParkingSpot` resource by its identifier.
     - **Mapping Annotation:** Use `@DeleteMapping(value = "/{id}")` to map DELETE requests for a specific parking spot.
     - **Parameters:**
-        - `@PathVariable(value = "id") UUID id`: Captures the identifier of the parking spot to be deleted from the URI.
-    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 200 (OK) status and a success message, or an HTTP
-      404 (Not Found) status if the spot is not found.
+        - `@PathVariable UUID id`: Captures the identifier of the parking spot to be deleted from the URI.
+    - **Response:** Returns a `ResponseEntity<Object>` with:
+        - HTTP 200 (OK) and a success message from `ParkingSpotMessages` if deletion is successful.
+        - HTTP 404 (Not Found) if the spot does not exist.
 
 - **Update Parking Spot by ID Endpoint:**
     - **Method:** `updateParkingSpot`
@@ -323,11 +333,37 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
     - **Mapping Annotation:** Use `@PutMapping(value = "/{id}")` to map PUT requests for updating a specific parking
       spot.
     - **Parameters:**
-        - `@PathVariable(value = "id") UUID id`: Captures the identifier of the parking spot from the URI.
+        - `@PathVariable UUID id`: Captures the identifier of the parking spot from the URI.
         - `@RequestBody @Valid ParkingSpotDTO parkingSpotDTO`: Captures the updated parking spot details from the
           request body.
-    - **Response:** Returns a `ResponseEntity<Object>` with an HTTP 200 (OK) status and the updated parking spot object,
-      or an HTTP 404 (Not Found) status if the spot is not found.
+    - **Response:** Returns a `ResponseEntity<Object>` with:
+        - HTTP 200 (OK) and the updated parking spot object if successful.
+        - HTTP 404 (Not Found) with a message from `ParkingSpotMessages` if the spot does not exist.
+
+***
+
+### Requirements for ParkingSpotMessages Utility Class:
+
+- **Class Declaration:**
+    - Create the `ParkingSpotMessages` class as a utility class to hold constant messages used throughout the
+      application.
+
+- **Private Constructor:**
+    - Define a private constructor to prevent instantiation of the utility class.
+    - Throw an `IllegalStateException` with the message `"Utility class"` to enforce non-instantiability.
+
+- **Constant Message Definitions:**
+    - **LICENSE_PLATE_IN_USE:** Define a public static final string with the value
+      `"Conflict: License Plate Car is already in use!"` to indicate when a license plate is already in use.
+    - **PARKING_SPOT_IN_USE:** Define a public static final string with the value
+      `"Conflict: Parking Spot is already in use!"` to indicate when a parking spot is already in use.
+    - **APARTMENT_BLOCK_IN_USE:** Define a public static final string with the value
+      `"Conflict: Parking Spot already registered for this apartment/block!"` to indicate when a parking spot is already
+      registered for a specific apartment and block.
+    - **PARKING_SPOT_NOT_FOUND:** Define a public static final string with the value `"Parking Spot not found."` to
+      indicate when a parking spot is not found.
+    - **PARKING_SPOT_DELETED_SUCCESS:** Define a public static final string with the value
+      `"Parking Spot deleted successfully."` to indicate successful deletion of a parking spot.
 
 ***
 

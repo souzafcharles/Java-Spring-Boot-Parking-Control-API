@@ -35,5 +35,4 @@ public record ParkingSpotDTO(
         @NotBlank
         String block
 ) {
-
 }
