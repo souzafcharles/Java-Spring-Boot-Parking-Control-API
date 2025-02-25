@@ -42,13 +42,14 @@ The Parking Control API's architecture is designed for maintainability and scala
 
 ## Dependencies:
 
-| Dependency           | Category         | Description                                                                                                    |
-|----------------------|------------------|----------------------------------------------------------------------------------------------------------------|
-| 🌐 Spring Web        | Web              | Build web applications, including RESTful APIs, using Spring MVC. Uses Apache Tomcat as the default container  |
-| 💾 Spring Data JPA   | SQL              | Facilitates database access using JPA with Spring Data and Hibernate                                           |
-| 🐘 PostgreSQL Driver | SQL              | JDBC and R2DBC driver enabling Java applications to interact with PostgreSQL databases                         |
-| ✔️ Validation        | Validation (I/O) | Enables Java Bean Validation using Hibernate Validator                                                         |
-| 🗝️ dotenv-java      | Configuration    | Loads environment variables from a `.env` file into the application, aiding in secure configuration management |
+| Dependency           | Category         | Description                                                                                                     |
+|----------------------|------------------|-----------------------------------------------------------------------------------------------------------------|
+| 🌐 Spring Web        | Web              | Builds web applications, including RESTful APIs, using Spring MVC. Uses Apache Tomcat as the default container. |
+| 💾 Spring Data JPA   | SQL              | Facilitates database access using JPA with Spring Data and Hibernate.                                           |
+| 🐘 PostgreSQL Driver | SQL              | JDBC and R2DBC driver enabling Java applications to interact with PostgreSQL databases.                         |
+| ✔️ Validation        | Validation (I/O) | Enables Java Bean Validation using Hibernate Validator.                                                         |
+| 🗝️ dotenv-java      | Configuration    | Loads environment variables from a `.env` file into the application, aiding in secure configuration management. |
+| 🔗 Spring HATEOAS    | Web              | Simplifies the creation of hypermedia-driven REST APIs, allowing resources to include links for navigation.     |
 
 ***
 
